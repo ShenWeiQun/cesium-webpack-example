@@ -49,4 +49,16 @@ module.exports = {
     ],
     mode: 'development',
     devtool: 'eval',
+    devServer: {
+        client: {
+          overlay: false,
+        },
+        proxy: [
+          {
+            context: ['/SampleData', '/images'],
+            target: 'https://sandcastle.cesium.com',
+            changeOrigin: true,
+          },
+        ],
+      },
 };

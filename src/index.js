@@ -1,6 +1,7 @@
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import "../src/css/main.css"
+import {addPolygons} from "./polygons"
 
 // Your access token can be found at: https://cesium.com/ion/tokens.
 // This is the default access token
@@ -50,11 +51,12 @@ viewer.scene.camera.setView({
 
 // Load the NYC buildings tileset
 const tileset = new Cesium.Cesium3DTileset({
-  // url: "https://api.klcgis.com/3dtiles/tileset.json",
-  url: Cesium.IonResource.fromAssetId(75343),
+  url: "https://api.klcgis.com/3dtiles/tileset.json",
+  // url: Cesium.IonResource.fromAssetId(75343),
 });
 viewer.scene.primitives.add(tileset);
-// viewer.flyTo(tileset);
+viewer.flyTo(tileset);
+addPolygons(viewer)
 
 // HTML overlay for showing feature name on mouseover
 const nameOverlay = document.createElement("div");
@@ -113,7 +115,8 @@ if (
     silhouetteBlue.selected = [];
 
     // Pick a new feature
-    const pickedFeature = viewer.scene.pick(movement.endPosition);
+    const {id} = viewer.scene.pick(movement.endPosition) || {};
+    const pickedFeature = id
     if (!Cesium.defined(pickedFeature)) {
       nameOverlay.style.display = "none";
       return;
@@ -126,7 +129,7 @@ if (
     }px`;
     nameOverlay.style.left = `${movement.endPosition.x}px`;
 
-    const name = pickedFeature.getProperty("BIN");
+    const name = pickedFeature.name;
     nameOverlay.textContent = name;
 
     // Highlight the feature if it's not already selected.
@@ -141,10 +144,15 @@ if (
     movement
   ) {
     // If a feature was previously selected, undo the highlight
+    silhouetteGreen.selected.forEach((item) => {
+      item.polygon.material = Cesium.Color.RED.withAlpha(0)
+    })
     silhouetteGreen.selected = [];
 
     // Pick a new feature
-    const pickedFeature = viewer.scene.pick(movement.position);
+    const {id} = viewer.scene.pick(movement.position) || {};
+    const pickedFeature = id
+
     if (!Cesium.defined(pickedFeature)) {
       clickHandler(movement);
       return;
@@ -163,25 +171,15 @@ if (
 
     // Highlight newly selected feature
     silhouetteGreen.selected = [pickedFeature];
+    pickedFeature.polygon.material = Cesium.Color.RED.withAlpha(0.5)
 
     // Set feature infobox description
-    const featureName = pickedFeature.getProperty("name");
+    const featureName = pickedFeature.name;
     selectedEntity.name = featureName;
     selectedEntity.description =
       'Loading <div class="cesium-infoBox-loading"></div>';
     viewer.selectedEntity = selectedEntity;
-    selectedEntity.description =
-      `${
-        '<table class="cesium-infoBox-defaultTable"><tbody>' +
-        "<tr><th>BIN</th><td>"
-      }${pickedFeature.getProperty("BIN")}</td></tr>` +
-      `<tr><th>DOITT ID</th><td>${pickedFeature.getProperty(
-        "DOITT_ID"
-      )}</td></tr>` +
-      `<tr><th>SOURCE ID</th><td>${pickedFeature.getProperty(
-        "SOURCE_ID"
-      )}</td></tr>` +
-      `</tbody></table>`;
+    selectedEntity.description = pickedFeature.description
   },
   Cesium.ScreenSpaceEventType.LEFT_CLICK);
 } else {
