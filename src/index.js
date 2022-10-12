@@ -1,7 +1,8 @@
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import "../src/css/main.css"
-import {addPolygons} from "./polygons"
+import { addPolygons } from "./polygons"
+import { addTileset } from "./tilesets"
 
 // Your access token can be found at: https://cesium.com/ion/tokens.
 // This is the default access token
@@ -23,10 +24,10 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   // skyBox: false,//天空盒子
   // skyAtmosphere: false, // 大气光晕
   creditContainer: document.createElement('div'), // 版权信息
- 
 
 
-  
+
+
   terrainProvider: Cesium.createWorldTerrain(),
 });
 
@@ -49,14 +50,8 @@ viewer.scene.camera.setView({
   endTransform: Cesium.Matrix4.IDENTITY,
 });
 
-// Load the NYC buildings tileset
-const tileset = new Cesium.Cesium3DTileset({
-  url: "https://api.klcgis.com/3dtiles/tileset.json",
-  // url: Cesium.IonResource.fromAssetId(75343),
-});
-viewer.scene.primitives.add(tileset);
-viewer.flyTo(tileset);
 addPolygons(viewer)
+addTileset(viewer)
 
 // HTML overlay for showing feature name on mouseover
 const nameOverlay = document.createElement("div");
@@ -115,7 +110,7 @@ if (
     silhouetteBlue.selected = [];
 
     // Pick a new feature
-    const {id} = viewer.scene.pick(movement.endPosition) || {};
+    const { id } = viewer.scene.pick(movement.endPosition) || {};
     const pickedFeature = id
     if (!Cesium.defined(pickedFeature)) {
       nameOverlay.style.display = "none";
@@ -124,9 +119,8 @@ if (
 
     // A feature was picked, so show it's overlay content
     nameOverlay.style.display = "block";
-    nameOverlay.style.bottom = `${
-      viewer.canvas.clientHeight - movement.endPosition.y
-    }px`;
+    nameOverlay.style.bottom = `${viewer.canvas.clientHeight - movement.endPosition.y
+      }px`;
     nameOverlay.style.left = `${movement.endPosition.x}px`;
 
     const name = pickedFeature.name;
@@ -137,7 +131,7 @@ if (
       silhouetteBlue.selected = [pickedFeature];
     }
   },
-  Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
   // Silhouette a feature on selection and show metadata in the InfoBox.
   viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(
@@ -150,7 +144,7 @@ if (
     silhouetteGreen.selected = [];
 
     // Pick a new feature
-    const {id} = viewer.scene.pick(movement.position) || {};
+    const { id } = viewer.scene.pick(movement.position) || {};
     const pickedFeature = id
 
     if (!Cesium.defined(pickedFeature)) {
@@ -181,7 +175,7 @@ if (
     viewer.selectedEntity = selectedEntity;
     selectedEntity.description = pickedFeature.description
   },
-  Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    Cesium.ScreenSpaceEventType.LEFT_CLICK);
 } else {
   // Silhouettes are not supported. Instead, change the feature color.
 
@@ -208,9 +202,8 @@ if (
     }
     // A feature was picked, so show it's overlay content
     nameOverlay.style.display = "block";
-    nameOverlay.style.bottom = `${
-      viewer.canvas.clientHeight - movement.endPosition.y
-    }px`;
+    nameOverlay.style.bottom = `${viewer.canvas.clientHeight - movement.endPosition.y
+      }px`;
     nameOverlay.style.left = `${movement.endPosition.x}px`;
     let name = pickedFeature.getProperty("name");
     if (!Cesium.defined(name)) {
@@ -227,7 +220,7 @@ if (
       pickedFeature.color = Cesium.Color.YELLOW;
     }
   },
-  Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
   // Color a feature on selection and show metadata in the InfoBox.
   viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(
@@ -268,9 +261,8 @@ if (
       'Loading <div class="cesium-infoBox-loading"></div>';
     viewer.selectedEntity = selectedEntity;
     selectedEntity.description =
-      `${
-        '<table class="cesium-infoBox-defaultTable"><tbody>' +
-        "<tr><th>BIN</th><td>"
+      `${'<table class="cesium-infoBox-defaultTable"><tbody>' +
+      "<tr><th>BIN</th><td>"
       }${pickedFeature.getProperty("BIN")}</td></tr>` +
       `<tr><th>DOITT ID</th><td>${pickedFeature.getProperty(
         "DOITT_ID"
@@ -292,7 +284,7 @@ if (
       )}</td></tr>` +
       `</tbody></table>`;
   },
-  Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
 
