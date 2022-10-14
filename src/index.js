@@ -6,7 +6,7 @@ import { addTileset } from "./tilesets"
 
 // Your access token can be found at: https://cesium.com/ion/tokens.
 // This is the default access token
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYWE1OWUxNy1mMWZiLTQzYjYtYTQ0OS1kMWFjYmFkNjc5YzciLCJpZCI6NTc3MzMsImlhdCI6MTYyNzg0NTE4Mn0.XcKpgANiY19MC4bdFUXMVEBToBmqS8kuYpUlxJHYZxk';
+// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYWE1OWUxNy1mMWZiLTQzYjYtYTQ0OS1kMWFjYmFkNjc5YzciLCJpZCI6NTc3MzMsImlhdCI6MTYyNzg0NTE4Mn0.XcKpgANiY19MC4bdFUXMVEBToBmqS8kuYpUlxJHYZxk';
 
 // A simple demo of 3D Tiles feature picking with hover and select behavior
 // Building data courtesy of NYC OpenData portal: http://www1.nyc.gov/site/doitt/initiatives/3d-building.page
@@ -21,17 +21,18 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
   timeline: false, // 时间线组件
   fullscreenButton: false, // 全屏按钮
 
-  // skyBox: false,//天空盒子
+  skyBox: false,//天空盒子
   // skyAtmosphere: false, // 大气光晕
   creditContainer: document.createElement('div'), // 版权信息
 
 
 
 
-  terrainProvider: Cesium.createWorldTerrain(),
+  // terrainProvider: Cesium.createWorldTerrain(),
+  globe: false // 不加载地球
 });
 
-viewer.scene.globe.depthTestAgainstTerrain = true;
+// viewer.scene.globe.depthTestAgainstTerrain = true;
 
 // Set the initial camera view to look at Manhattan
 const initialPosition = Cesium.Cartesian3.fromDegrees(
